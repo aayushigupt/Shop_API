@@ -11,7 +11,8 @@ class Cart_Item extends StatelessWidget {
   final String title;
   final String imageUrl;
 
-  Cart_Item(this.id,this.productId, this.price, this.quantity, this.title, this.imageUrl);
+  Cart_Item(this.id, this.productId, this.price, this.quantity, this.title,
+      this.imageUrl);
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +37,35 @@ class Cart_Item extends StatelessWidget {
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Do you want to remove item from the cart'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop(false);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop(true);
+                      },
+                    )
+                  ],
+                ));
+      },
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: ListTile(
             leading: CircleAvatar(
-              child: Image.network(
-                imageUrl,
-              ),
+            backgroundImage: NetworkImage(imageUrl),
             ),
             title: Text(title),
             subtitle: Text('Total :\$${price * quantity}'),
