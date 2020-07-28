@@ -10,6 +10,7 @@ class User_Item extends StatelessWidget {
   User_Item(this.id, this.title, this.imageUrl);
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     // TODO: implement build
     return ListTile(
         title: Text(title),
@@ -35,8 +36,15 @@ class User_Item extends StatelessWidget {
                     Icons.delete,
                     color: Theme.of(context).errorColor,
                   ),
-                  onPressed: () {
-                    Provider.of<Products>(context, listen: false).deleteProduct(id);
+                  onPressed: () async{
+                    try {
+                     await Provider.of<Products>(context, listen: false)
+                          .deleteProduct(id);
+                    } catch (error) {
+                      scaffold.showSnackBar(SnackBar(
+                        content: Text("Unable to delete item!!"),
+                      ));
+                    }
                   })
             ],
           ),

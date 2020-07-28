@@ -13,7 +13,37 @@ enum FilterOptions {
   all,
 }
 
-class Product_Overview_Screen extends StatelessWidget {
+class Product_Overview_Screen extends StatefulWidget {
+  @override
+  _Product_Overview_ScreenState createState() =>
+      _Product_Overview_ScreenState();
+}
+
+class _Product_Overview_ScreenState extends State<Product_Overview_Screen> {
+  var _isInit = true;
+ var _isLoading = false;
+  void initState() {
+    super.initState();
+  }
+
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      
+      Provider.of<Products>(context).fetchAndGetProduct().then((_){
+         setState(() {
+      _isLoading = false;
+    });
+      });
+    }
+   
+    
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final productContainer = Provider.of<Products>(context);
@@ -54,10 +84,9 @@ class Product_Overview_Screen extends StatelessWidget {
             ),
           )
         ],
-        
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(),
+      body: _isLoading ? Center(child: CircularProgressIndicator(),) : ProductsGrid(),
     );
   }
 }
